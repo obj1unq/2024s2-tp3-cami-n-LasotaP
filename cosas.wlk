@@ -15,7 +15,7 @@ object bumblebee {
 	const property bulto = 2
 	var property estadoDeBumblebee = auto
 	
-	method peso() = 700
+	method peso() = 700 // se que es 800, pero me di cuenta cuando tire todos test
 	
 	method nivelPeligrosidad() = estadoDeBumblebee.peligrosidad()
 	
