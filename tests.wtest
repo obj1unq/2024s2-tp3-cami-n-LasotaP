@@ -4,7 +4,7 @@ import destinos.*
 import caminos.*
 
 
-describe "All tests" {
+describe "CAMION" {
   test "Cargar y Descargar,
         Que todo lo que este cargado sea par,
         Igualdad de peso con un peso que yo le doy hayAlgunoQuePesa()
@@ -143,6 +143,12 @@ describe "All tests" {
     assert.equals(4, camion.totalBultos())
   }
 
+
+
+  
+}
+
+describe "TRANSPORTE" {
   test "TRANSPORTE
         Fallas exitosas por validacion de PESO
   " {
@@ -201,5 +207,4 @@ describe "All tests" {
 
     assert.equals(4, camion.totalBultos()) // este assert solo esta puesto para que no me subraye el IDE NUNCA DEBERIA LLEGAR A DAR ERROR POR ESTE ASSERT
   }
-  
 }
