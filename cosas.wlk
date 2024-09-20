@@ -13,7 +13,7 @@ object knightRider {
 // BUMBLEBEE
 object bumblebee {
 	const property bulto = 2
-	var estadoDeBumblebee = auto
+	var property estadoDeBumblebee = auto
 	
 	method peso() = 700
 	

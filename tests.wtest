@@ -158,9 +158,8 @@ describe "TRANSPORTE" {
     camion.cargar(paqueteDeLadrillos)
     camion.cargar(bateriaAntiaerea) 
     
-    camion.transportar(almacen, rutaNueve) // Falla exitosa 
+    assert.throwsExceptionWithMessage("El camion esta excedido de peso por 24Kg", { camion.transportar(almacen, rutaNueve) })
 
-    assert.equals(4, camion.totalBultos()) // este assert solo esta puesto para que no me subraye el IDE NUNCA DEBERIA LLEGAR A DAR ERROR POR ESTE ASSERT
   }
   test "TRANSPORTE
         Fallas exitosas por validacion de DESTINO
@@ -169,12 +168,10 @@ describe "TRANSPORTE" {
     camion.cargar(knightRider) // 1 bulto
     camion.cargar(bumblebee) // 2 bultos
     camion.cargar(paqueteDeLadrillos) // 2 bultos
+    almacen.bultoMaximo(3)
 
-    almacen.bultoMaximo(3) 
-    
-    camion.transportar(almacen, rutaNueve) // Falla exitosa 
+    assert.throwsExceptionWithMessage("El transporte nose puede realizar porque no hay suficiente espacio en el almacen", { camion.transportar(almacen, rutaNueve) })
 
-    assert.equals(4, camion.totalBultos()) // este assert solo esta puesto para que no me subraye el IDE NUNCA DEBERIA LLEGAR A DAR ERROR POR ESTE ASSERT
   }
   
   test "TRANSPORTE
@@ -184,12 +181,10 @@ describe "TRANSPORTE" {
     camion.cargar(knightRider) // 1 bulto
     camion.cargar(bumblebee) // 2 bultos
     camion.cargar(paqueteDeLadrillos) // 1 bultos
-    
     almacen.bultoMaximo(10) 
+    
+    assert.throwsExceptionWithMessage("El transporte no se puede realizar porque lo que transporta es demasiado peligroso", { camion.transportar(almacen, rutaNueve) })
 
-    camion.transportar(almacen, rutaNueve) // Falla exitosa 
-
-    assert.equals(4, camion.totalBultos()) // este assert solo esta puesto para que no me subraye el IDE NUNCA DEBERIA LLEGAR A DAR ERROR POR ESTE ASSERT
   }
   test "TRANSPORTE
         Fallas exitosas por validacion de CAMINO (CAMINO VECINAL)
@@ -199,12 +194,10 @@ describe "TRANSPORTE" {
     camion.cargar(bumblebee) // 700kg
     camion.cargar(paqueteDeLadrillos) // 24kg
     // + PESO DE CAMION = 1000kg
-    
     almacen.bultoMaximo(10)
     caminoVecinal.pesoTolerado(2000)
+    
+    assert.throwsExceptionWithMessage("El transporte no se puede realizar porque es demasiado para pasar hacer el camino vecinal", { camion.transportar(almacen, caminoVecinal) })
 
-    camion.transportar(almacen, caminoVecinal) // Falla exitosa 
-
-    assert.equals(4, camion.totalBultos()) // este assert solo esta puesto para que no me subraye el IDE NUNCA DEBERIA LLEGAR A DAR ERROR POR ESTE ASSERT
   }
 }
