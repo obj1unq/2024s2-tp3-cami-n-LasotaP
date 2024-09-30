@@ -2,7 +2,7 @@ import cosas.*
 import caminos.*
 import destinos.*
 
-object camion {
+class Camion {
 	const property pesoCamion = 1000 
 	const pesoMaximo = 2500 
 	const property cosas = #{}

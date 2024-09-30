@@ -5,6 +5,10 @@ import caminos.*
 
 
 describe "CAMION" {
+
+  const camion = new Camion()
+
+
   test "Cargar y Descargar,
         Que todo lo que este cargado sea par,
         Igualdad de peso con un peso que yo le doy hayAlgunoQuePesa()
@@ -144,11 +148,6 @@ describe "CAMION" {
   }
 
 
-
-  
-}
-
-describe "TRANSPORTE" {
   test "TRANSPORTE
         Fallas exitosas por validacion de PESO
   " {

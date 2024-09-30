@@ -132,7 +132,6 @@ object embalajeDeSeguridad {
 	
 	method nivelPeligrosidad() = cosa.nivelPeligrosidad() / 2
 	
-	method actualizarCarga() {
-		
+	method actualizarCarga() {	
 	}
 }
