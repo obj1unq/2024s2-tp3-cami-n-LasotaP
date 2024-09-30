@@ -1,0 +1,202 @@
+import camion.*
+import cosas.*
+import destinos.*
+import caminos.*
+
+
+describe "CAMION" {
+
+  const camion = new Camion()
+
+
+  test "Cargar y Descargar,
+        Que todo lo que este cargado sea par,
+        Igualdad de peso con un peso que yo le doy hayAlgunoQuePesa()
+  " {
+    camion.cargar(knightRider)
+    //camion.descargar(bumblebee) // esta comentada para demostrar que no hace nada que haga un .remove(...) si no esta el argumento, deberia mandarle algun mensaje de error como que no tiene el objeto que quiere descargar
+    camion.cargar(bumblebee)
+
+    assert.equals(2, camion.cosas().size())
+    assert.that(camion.hayAlgunoQuePesa(700))
+    assert.that(camion.todoPesoPar())
+
+    camion.descargar(bumblebee)
+
+    assert.equals(1, camion.cosas().size())
+    
+  }
+  test "Verificando nivel de peligrosidad (teniendo en cuenta que se actualizan las cosas),
+        Peso total,
+        Exceso de peso,
+        Filtro por peligrosidad,
+        Puede ciruclar en ruta (no puede por ruta nueve, porque se excede de peligrosidad)
+  " {
+    camion.cargar(knightRider)
+    camion.cargar(bumblebee)
+    camion.cargar(paqueteDeLadrillos)
+    
+    assert.equals(bumblebee, camion.elDeNivel(30))
+    assert.equals(2224, camion.pesoTotal())
+    assert.notThat(camion.excedidoDePeso())
+    assert.equals(#{bumblebee, knightRider}, camion.objetosQueSuperanPeligrosidad(5))
+    assert.equals(#{bumblebee, knightRider}, camion.objetosMasPeligrososQue(paqueteDeLadrillos))
+    assert.notThat(camion.puedeCircularEnRuta(rutaNueve.nivelDePeligrosidad()))
+  }
+
+  test "COSAS
+        cada cosa que se carga con su consecuncia de carga si la tiene
+  " {
+    // ----- bumblebee -----
+    assert.equals(15, bumblebee.nivelPeligrosidad())
+
+    camion.cargar(bumblebee)
+
+    assert.equals(30, bumblebee.nivelPeligrosidad())
+
+    // ----- Paquete de ladrillos -----
+    assert.equals(0, paqueteDeLadrillos.peso())
+    assert.equals(1, paqueteDeLadrillos.bulto())
+
+    camion.cargar(paqueteDeLadrillos)
+
+    assert.equals(24, paqueteDeLadrillos.peso())    
+
+    paqueteDeLadrillos.cantidadDeLadrillos(101)
+    assert.equals(202, paqueteDeLadrillos.peso())
+    assert.equals(2, paqueteDeLadrillos.bulto())
+
+    paqueteDeLadrillos.cantidadDeLadrillos(301)
+    assert.equals(602, paqueteDeLadrillos.peso())
+    assert.equals(3, paqueteDeLadrillos.bulto())
+
+    // ----- Arena a granel -----
+    assert.equals(0, arenaAGranel.peso())
+
+    camion.cargar(arenaAGranel)
+
+    assert.equals(20, arenaAGranel.peso())
+
+    // ----- Bateria antiaerea -----
+
+    assert.equals(0, bateriaAntiaerea.nivelPeligrosidad())
+    assert.equals(200, bateriaAntiaerea.peso())
+    assert.equals(1, bateriaAntiaerea.bulto())
+
+    camion.cargar(bateriaAntiaerea)
+
+    assert.equals(100, bateriaAntiaerea.nivelPeligrosidad())
+    assert.equals(300, bateriaAntiaerea.peso())
+    assert.equals(2, bateriaAntiaerea.bulto())
+
+    // ----- Contenedor Portuario -----
+
+    assert.equals(0, contenedorPortuario.nivelPeligrosidad())
+    assert.equals(100, contenedorPortuario.peso())
+    assert.equals(1, contenedorPortuario.bulto())
+
+    contenedorPortuario.cargarEnContenedor(knightRider)
+
+    assert.equals(10, contenedorPortuario.nivelPeligrosidad())
+    assert.equals(600, contenedorPortuario.peso())
+    assert.equals(2, contenedorPortuario.bulto())
+
+    contenedorPortuario.cargarEnContenedor(bumblebee)
+
+    assert.equals(30, contenedorPortuario.nivelPeligrosidad())
+    assert.equals(1300, contenedorPortuario.peso())
+    assert.equals(4, contenedorPortuario.bulto())
+
+      // ----- Reciduos radioactivos -----
+    
+    assert.equals(0, reciduosRadioactivos.peso())
+
+    camion.cargar(reciduosRadioactivos)
+
+    assert.equals(15, reciduosRadioactivos.peso())
+
+    // ----- Embalaje de seguridad -----
+
+    assert.equals(5, embalajeDeSeguridad.nivelPeligrosidad())
+    assert.equals(500, embalajeDeSeguridad.peso())
+
+    embalajeDeSeguridad.cosa(bumblebee)
+
+    assert.equals(15, embalajeDeSeguridad.nivelPeligrosidad())
+    assert.equals(700, embalajeDeSeguridad.peso())
+
+  }
+
+  test "AGREGADOS DEL CAMION
+        tieneAlgoQuePesaEntre(min, max)
+        cosaMasPesada()
+        pesos()
+        totalBultos()
+  " {
+    camion.cargar(knightRider)
+    camion.cargar(bumblebee)
+    camion.cargar(paqueteDeLadrillos)
+
+    assert.notThat(camion.tieneAlgoQuePesaEntre(1,5))
+    assert.that(camion.tieneAlgoQuePesaEntre(50,1000))
+
+    assert.equals(bumblebee, camion.cosaMasPesada())
+
+    assert.equals([500,700,24], camion.pesos())
+
+    assert.equals(4, camion.totalBultos())
+  }
+
+
+  test "TRANSPORTE
+        Fallas exitosas por validacion de PESO
+  " {
+
+    camion.cargar(knightRider)
+    camion.cargar(bumblebee)
+    camion.cargar(paqueteDeLadrillos)
+    camion.cargar(bateriaAntiaerea) 
+    
+    assert.throwsExceptionWithMessage("El camion esta excedido de peso por 24Kg", { camion.transportar(almacen, rutaNueve) })
+
+  }
+  test "TRANSPORTE
+        Fallas exitosas por validacion de DESTINO
+  " {
+
+    camion.cargar(knightRider) // 1 bulto
+    camion.cargar(bumblebee) // 2 bultos
+    camion.cargar(paqueteDeLadrillos) // 2 bultos
+    almacen.bultoMaximo(3)
+
+    assert.throwsExceptionWithMessage("El transporte nose puede realizar porque no hay suficiente espacio en el almacen", { camion.transportar(almacen, rutaNueve) })
+
+  }
+  
+  test "TRANSPORTE
+        Fallas exitosas por validacion de CAMINO (RUTA 9)
+  " {
+
+    camion.cargar(knightRider) // 1 bulto
+    camion.cargar(bumblebee) // 2 bultos
+    camion.cargar(paqueteDeLadrillos) // 1 bultos
+    almacen.bultoMaximo(10) 
+    
+    assert.throwsExceptionWithMessage("El transporte no se puede realizar porque lo que transporta es demasiado peligroso", { camion.transportar(almacen, rutaNueve) })
+
+  }
+  test "TRANSPORTE
+        Fallas exitosas por validacion de CAMINO (CAMINO VECINAL)
+  " {
+
+    camion.cargar(knightRider) // 500kg
+    camion.cargar(bumblebee) // 700kg
+    camion.cargar(paqueteDeLadrillos) // 24kg
+    // + PESO DE CAMION = 1000kg
+    almacen.bultoMaximo(10)
+    caminoVecinal.pesoTolerado(2000)
+    
+    assert.throwsExceptionWithMessage("El transporte no se puede realizar porque es demasiado para pasar hacer el camino vecinal", { camion.transportar(almacen, caminoVecinal) })
+
+  }
+}
